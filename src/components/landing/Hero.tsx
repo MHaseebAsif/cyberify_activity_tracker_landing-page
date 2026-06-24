@@ -3,7 +3,9 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import waves from "@/assets/cyber-waves.jpg";
 import { ParticleField } from "./Core";
 import { LayoutGrid, Apple, Terminal } from "lucide-react";
-
+import windowsIcon from "@/assets/Icons/windows.png";
+import appleIcon from "@/assets/Icons/apple.png";
+import linuxIcon from "@/assets/Icons/linux.png";
 /* ============== HERO CLOCK ============== */
 function HeroClock() {
   const [hourRotate, setHourRotate] = useState(0);
@@ -183,9 +185,15 @@ export function Hero() {
           className="mt-16 flex items-center justify-center gap-8 text-muted-foreground text-xs font-mono tracking-widest"
         >
           <span className="opacity-60">AVAILABLE ON</span>
-          <span className="flex items-center gap-2 hover:text-ember transition"><LayoutGrid size={14} /> WINDOWS</span>
-          <span className="flex items-center gap-2 hover:text-ember transition"><Apple size={14} /> MACOS</span>
-          <span className="flex items-center gap-2 hover:text-ember transition"><Terminal size={14} /> LINUX</span>
+          <span className="flex items-center gap-2 hover:text-ember transition group">
+            <motion.img animate={{ y: [0, -2, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} whileHover={{ scale: 1.2, rotate: 5 }} src={windowsIcon} className="w-4 h-4 object-contain opacity-80 group-hover:opacity-100 transition-all drop-shadow-sm" alt="Windows" /> WINDOWS
+          </span>
+          <span className="flex items-center gap-2 hover:text-ember transition group">
+            <motion.img animate={{ y: [0, -2, 0] }} transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }} whileHover={{ scale: 1.2, rotate: -5 }} src={appleIcon} className="w-4 h-4 object-contain opacity-80 group-hover:opacity-100 transition-all drop-shadow-sm" alt="macOS" /> MAC
+          </span>
+          <span className="flex items-center gap-2 hover:text-ember transition group">
+            <motion.img animate={{ y: [0, -2, 0] }} transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} whileHover={{ scale: 1.2, rotate: 5 }} src={linuxIcon} className="w-4 h-4 object-contain opacity-80 group-hover:opacity-100 transition-all drop-shadow-sm" alt="Linux" /> LINUX
+          </span>
         </motion.div>
       </motion.div>
 

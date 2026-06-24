@@ -3,17 +3,23 @@ import { motion, useInView } from "framer-motion";
 import { Reveal, Section } from "./Core";
 import logo from "@/assets/cyberify-logo.png";
 import clockIcon from "@/assets/cyberify-clock.png";
-import { 
-  Radio, Brain, Zap, BarChart3, Users, LayoutDashboard, Shield, 
-  Monitor, Lock, Cloud, CheckCircle, Target, 
-  LayoutGrid, Apple, Terminal, Smartphone, RefreshCw, ShieldCheck 
+import windowsIcon from "@/assets/Icons/windows.png";
+import windows11Icon from "@/assets/Icons/windows_11.png";
+import appleIcon from "@/assets/Icons/apple.png";
+import macIcon from "@/assets/Icons/mac.png";
+import linuxIcon from "@/assets/Icons/linux.png";
+import archLinuxIcon from "@/assets/Icons/arch_linux.png";
+import {
+  Radio, Brain, Zap, BarChart3, Users, LayoutDashboard, Shield,
+  Monitor, Lock, Cloud, CheckCircle, Target,
+  Smartphone, RefreshCw, ShieldCheck
 } from "lucide-react";
 
 /* ============== FEATURE GRID ============== */
 export function FeatureGrid() {
   const features = [
     { i: <Radio size={28} className="text-ember" />, t: "Real-Time Activity Intelligence", d: "Every signal, every state, streamed live." },
-    { i: <Brain size={28} className="text-ember" />, t: "AI Productivity Analysis", d: "GPT-4o turns activity into human summaries." },
+    { i: <Brain size={28} className="text-ember" />, t: "AI Productivity Analysis", d: "Cyberify turns activity into human summaries." },
     { i: <Zap size={28} className="text-ember" />, t: "Smart Work Tracking", d: "Zero-config, app-aware, privacy-first." },
     { i: <BarChart3 size={28} className="text-ember" />, t: "Daily Reports", d: "Auto-generated. Auto-delivered." },
     { i: <Users size={28} className="text-ember" />, t: "Team Reports", d: "Roll up insights across squads." },
@@ -78,7 +84,7 @@ export function Architecture() {
     { n: "FastAPI", d: "High-performance Python API" },
     { n: "Redis", d: "Real-time stream layer" },
     { n: "PostgreSQL", d: "Source of truth" },
-    { n: "GPT-4o", d: "AI analysis engine" },
+    { n: "Cyberify", d: "AI analysis engine" },
     { n: "S3 Storage", d: "Artifact persistence" },
     { n: "PDF Reports", d: "Delivered automatically" },
   ];
@@ -147,7 +153,7 @@ export function WhyCyberify() {
     { v: 4, l: "Role Dashboards" },
     { v: 5, l: "Automated Workers" },
     { v: "99.9", s: "%", l: "Uptime Target" },
-    { v: "GPT-4o", l: "AI Engine" },
+    { v: "Cyberify", l: "AI Engine" },
     { v: 3, l: "Desktop Platforms" },
   ];
   return (
@@ -181,7 +187,7 @@ export function Comparison() {
   const rows = [
     ["Visibility", "Hours clocked", "AI-decoded outcomes"],
     ["Reports", "Manual & late", "Auto-generated daily"],
-    ["Insight depth", "Spreadsheets", "GPT-4o summaries"],
+    ["Insight depth", "Spreadsheets", "Cyberify summaries"],
     ["Focus signal", "Invisible", "Tracked & rewarded"],
     ["Privacy", "Surveillance", "Activity-only, no keystrokes"],
     ["Setup", "Weeks", "Minutes"],
@@ -251,7 +257,11 @@ export function DesktopShowcase() {
       <div className="relative max-w-5xl mx-auto">
         {/* orbiting OS */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          {[<LayoutGrid key="win" size={32} />, <Apple key="mac" size={32} />, <Terminal key="lin" size={32} />].map((o, i) => (
+          {[
+            <motion.img key="win" src={windowsIcon} className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" alt="Windows 11" animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />,
+            <motion.img key="mac" src={macIcon} className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" alt="macOS" animate={{ rotate: [0, -10, 10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }} />,
+            <motion.img key="lin" src={linuxIcon} className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" alt="Linux" animate={{ rotate: [0, 15, -5, 0] }} transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 2 }} />
+          ].map((o, i) => (
             <motion.div
               key={i}
               className="absolute text-3xl"
@@ -326,9 +336,33 @@ export function DesktopShowcase() {
 /* ============== DOWNLOAD CENTER ============== */
 export function DownloadCenter() {
   const platforms = [
-    { os: "Windows", icon: <LayoutGrid size={48} />, v: "1.0.0", details: "Windows 10+ · 64-bit", primary: true, buttons: [{ l: "Download .exe", k: "exe" }], req: ["Windows 10+", "4 GB RAM", "200 MB Storage", "Internet Connection"] },
-    { os: "Linux", icon: <Terminal size={48} />, v: "1.0.0", details: "Ubuntu · Debian · Fedora · Arch", buttons: [{ l: "Download .deb", k: "deb" }, { l: "Download .AppImage", k: "appimage" }], req: ["Ubuntu 20.04+", "Debian 11+", "Fedora 37+", "4 GB RAM"] },
-    { os: "macOS", icon: <Apple size={48} />, v: "1.0.0", details: "Apple Silicon · Intel", buttons: [{ l: "Download .dmg", k: "dmg" }], req: ["macOS 13+", "Apple Silicon", "Intel Supported"] },
+    {
+      os: "Windows",
+      icon: (
+        <div className="flex items-center justify-center h-20">
+          <motion.img animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} src={windowsIcon} className="w-12 h-12 object-contain drop-shadow-xl" alt="Windows" />
+        </div>
+      ),
+      v: "1.0.0", details: "Windows 10+ · 64-bit", primary: true, buttons: [{ l: "Download .exe", k: "exe" }], req: ["Windows 10+", "4 GB RAM", "200 MB Storage", "Internet Connection"]
+    },
+    {
+      os: "Linux",
+      icon: (
+        <div className="flex items-center justify-center h-20">
+          <motion.img animate={{ y: [0, -6, 0] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }} src={linuxIcon} className="w-16 h-16 object-contain drop-shadow-xl" alt="Linux" />
+        </div>
+      ),
+      v: "1.0.0", details: "Ubuntu · Debian · Fedora · Arch", buttons: [{ l: "Download .deb", k: "deb" }, { l: "Download .AppImage", k: "appimage" }], req: ["Ubuntu 20.04+", "Debian 11+", "Fedora 37+", "4 GB RAM"]
+    },
+    {
+      os: "macOS",
+      icon: (
+        <div className="flex items-center justify-center h-20">
+          <motion.img animate={{ y: [0, -6, 0] }} transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.4 }} src={macIcon} className="w-20 h-20 object-contain drop-shadow-xl" alt="macOS" />
+        </div>
+      ),
+      v: "1.0.0", details: "Apple Silicon · Intel", buttons: [{ l: "Download .dmg", k: "dmg" }], req: ["macOS 13+", "Apple Silicon", "Intel Supported"]
+    },
   ];
   return (
     <Section id="download">

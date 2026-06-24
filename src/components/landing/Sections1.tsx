@@ -1,9 +1,9 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { Reveal, Section, ParticleField } from "./Core";
 import { HangingRubberClock } from "./HangingClock";
 import { FileSpreadsheet, ClipboardList, MessageSquare, FileText, Globe, LineChart, Phone, StickyNote } from "lucide-react";
-
+import saadNaeemImg from "@/assets/Pictures/CEO.png";
 /* ============== PROBLEM ============== */
 export function ProblemSection() {
   const items = [
@@ -13,7 +13,7 @@ export function ProblemSection() {
     { t: "Reports take forever" },
     { t: "Focus time disappears unnoticed" },
   ];
-  
+
   const clutter = [
     { icon: <FileSpreadsheet size={14} />, text: "Excel" },
     { icon: <ClipboardList size={14} />, text: "Timesheets" },
@@ -43,24 +43,11 @@ export function ProblemSection() {
         </div>
       </div>
       <div className="relative h-48 mb-16 overflow-hidden">
-        {clutter.map((item, i) => (
-          <motion.div
-            key={i}
-            className="absolute glass rounded-md px-3 py-2 text-xs font-mono text-muted-foreground flex items-center gap-2"
-            initial={{ x: `${i * 12 - 30}%`, y: Math.sin(i) * 40, opacity: 0.6, rotate: Math.random() * 30 - 15 }}
-            whileInView={{ opacity: [0.6, 1, 0], scale: [1, 1.1, 0], filter: ["blur(0px)", "blur(0px)", "blur(8px)"] }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 2, delay: i * 0.1 }}
-          >
-            {item.icon} {item.text}
-          </motion.div>
-        ))}
         <motion.div
-          className="absolute left-0 right-0 top-1/2 h-1 bg-gradient-to-r from-transparent via-ember to-transparent"
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1, opacity: [0, 1, 0] }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5, delay: 0.8 }}
+          className="absolute left-0 right-0 bottom-1 h-1 bg-gradient-to-r from-transparent via-ember to-transparent"
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{ scaleX: [0, 1, 0], opacity: [0, 0.8, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
           style={{ boxShadow: "0 0 30px #ff7a18" }}
         />
       </div>
@@ -117,7 +104,7 @@ export function IntelligenceEngine() {
           <div className="absolute inset-8 rounded-full border border-ember/20" />
           <div className="text-center">
             <div className="font-mono text-xs text-ember tracking-widest">CORE</div>
-            <div className="text-2xl font-bold text-chrome mt-1">JARVIS</div>
+            <div className="text-2xl font-bold text-chrome mt-1">Cyberify</div>
             <div className="font-mono text-[10px] text-muted-foreground mt-1">v1.0 · ONLINE</div>
           </div>
           <motion.div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none" style={{ background: "linear-gradient(180deg, transparent 49%, rgba(255,122,24,0.6) 50%, transparent 51%)" }} animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} />
@@ -230,7 +217,7 @@ export function AIBrain() {
             })}
           </svg>
           <div className="relative font-mono text-xs text-ember tracking-widest text-center">
-            <div className="text-chrome font-bold text-lg">GPT-4o</div>
+            <div className="text-chrome font-bold text-lg">Cyberify</div>
             <div>ANALYSIS</div>
           </div>
         </div>
@@ -248,13 +235,66 @@ export function AIBrain() {
   );
 }
 
+/* ============== ROTATING AVATAR ============== */
+import ops1 from "@/assets/Pictures/team/ops_1.png";
+import ops2 from "@/assets/Pictures/team/ops_2.png";
+import ops3 from "@/assets/Pictures/team/ops_3.svg";
+import pm1 from "@/assets/Pictures/team/pm_1.png";
+import pm2 from "@/assets/Pictures/team/pm_2.png";
+import dev1 from "@/assets/Pictures/team/dev_1.png";
+import dev2 from "@/assets/Pictures/team/dev_2.svg";
+import dev3 from "@/assets/Pictures/team/dev_3.svg";
+
+function RotatingAvatar({ images, color }: { images: string[]; color: string }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  return (
+    <div className="w-20 h-20 mb-5 relative">
+      {images.map((src, idx) => (
+        <motion.img
+          key={idx}
+          src={src}
+          alt={`Team member ${idx + 1}`}
+          className="absolute inset-0 w-full h-full rounded-full object-cover z-10"
+          style={{ boxShadow: `0 0 30px ${color}40` }}
+          initial={false}
+          animate={{
+            opacity: idx === currentIndex ? 1 : 0,
+            scale: idx === currentIndex ? 1 : 0.92,
+          }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+        />
+      ))}
+      <motion.div
+        className="absolute -inset-2 rounded-full border opacity-40 pointer-events-none z-20"
+        style={{ borderColor: color }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+      />
+    </div>
+  );
+}
+
 /* ============== DASHBOARD UNIVERSE ============== */
 export function DashboardUniverse() {
+  /* ── To add new team members: just import their image and push to the array below ── */
+  const opsTeam = [ops1, ops2, ops3];
+  const pmTeam = [pm1, pm2];
+  const devTeam = [dev1, dev2, dev3];
+
   const planets = [
-    { name: "CEO", color: "#ff7a18", size: 200, items: ["Company Productivity", "Attendance", "Workforce Trends"] },
-    { name: "Operations", color: "#fbbf24", size: 170, items: ["Approvals", "Attendance", "Tracking"] },
-    { name: "PM", color: "#22d3ee", size: 150, items: ["Team Reports", "Developer Insights"] },
-    { name: "Developer", color: "#a78bfa", size: 130, items: ["Personal Performance", "Daily History", "Focus Analytics"] },
+    { name: "CEO", color: "#ff7a18", items: ["Company Productivity", "Attendance", "Workforce Trends"], team: null as string[] | null },
+    { name: "Operations", color: "#fbbf24", items: ["Approvals", "Attendance", "Tracking"], team: opsTeam },
+    { name: "PM", color: "#22d3ee", items: ["Team Reports", "Developer Insights"], team: pmTeam },
+    { name: "Developer", color: "#a78bfa", items: ["Personal Performance", "Daily History", "Focus Analytics"], team: devTeam },
   ];
   return (
     <Section className="bg-[oklch(0.09_0.012_250)] overflow-hidden">
@@ -268,9 +308,14 @@ export function DashboardUniverse() {
             <div className="glass rounded-2xl p-6 h-full group hover:border-ember/40 transition relative overflow-hidden">
               <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-30 blur-2xl group-hover:opacity-60 transition" style={{ background: p.color }} />
               <div className="relative">
-                <div className="w-20 h-20 rounded-full mb-5 relative" style={{ background: `radial-gradient(circle at 30% 30%, ${p.color}, ${p.color}66, ${p.color}22)`, boxShadow: `0 0 30px ${p.color}40` }}>
-                  <motion.div className="absolute -inset-2 rounded-full border opacity-40" style={{ borderColor: p.color }} animate={{ rotate: 360 }} transition={{ duration: 12, repeat: Infinity, ease: "linear" }} />
-                </div>
+                {i === 0 ? (
+                  <div className="w-20 h-20 mb-5 relative">
+                    <img src={saadNaeemImg} alt="CEO Saad Naeem" className="w-full h-full rounded-full object-cover relative z-10" style={{ boxShadow: `0 0 30px ${p.color}40` }} />
+                    <motion.div className="absolute -inset-2 rounded-full border opacity-40 pointer-events-none" style={{ borderColor: p.color }} animate={{ rotate: 360 }} transition={{ duration: 12, repeat: Infinity, ease: "linear" }} />
+                  </div>
+                ) : (
+                  <RotatingAvatar images={p.team!} color={p.color} />
+                )}
                 <h3 className="text-2xl font-bold text-chrome">{p.name}</h3>
                 <p className="font-mono text-xs text-ember tracking-widest mt-1 mb-4">PLANET</p>
                 <ul className="space-y-1.5">{p.items.map(it => (<li key={it} className="text-sm text-muted-foreground flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-ember" />{it}</li>))}</ul>
