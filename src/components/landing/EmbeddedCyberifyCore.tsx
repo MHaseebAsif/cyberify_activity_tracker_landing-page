@@ -9,7 +9,6 @@ export function EmbeddedCyberifyCore() {
     <div
       className="
         relative -mt-2 w-screen max-w-none left-1/2 -translate-x-1/2
-        h-[min(66vh,595px)]
         [&_section]:!mx-0
         [&_section]:!w-full
         [&_section]:!max-w-none
@@ -18,8 +17,6 @@ export function EmbeddedCyberifyCore() {
         [&_section]:!text-inherit
         [&_section]:!min-h-0
         [&_section]:!h-[min(78vh,700px)]
-        [&_section]:!origin-top
-        [&_section]:!scale-[0.85]
         [&_section>canvas]:!z-[1]
         [&_section>canvas]:!bg-transparent
         [&_section>div:nth-child(2)]:hidden
