@@ -335,30 +335,62 @@ export function DesktopShowcase() {
 
 /* ============== DOWNLOAD CENTER ============== */
 export function DownloadCenter() {
-  const [versions, setVersions] = useState<{ [key: string]: string }>({
-    Windows: "1.0.0",
-    Linux: "1.0.0",
-    macOS: "1.0.0",
-  });
+  const [windowsVersion, setWindowsVersion] = useState("...");
+  const [linuxVersion, setLinuxVersion] = useState("...");
+  const [macVersion, setMacVersion] = useState("...");
 
   useEffect(() => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://cyberifytracker.run.place";
-    fetch(`${backendUrl}/api/v1/app/latest-download`)
+
+    // Fetch Windows Version
+    fetch(`${backendUrl}/api/v1/app/version/windows`)
       .then((res) => {
         if (!res.ok) throw new Error();
         return res.json();
       })
       .then((data) => {
-        if (data) {
-          setVersions({
-            Windows: data.windows || "1.0.0",
-            Linux: data.linux || "1.0.0",
-            macOS: data.mac || "1.0.0",
-          });
+        if (data?.version) {
+          setWindowsVersion(data.version);
+        } else {
+          setWindowsVersion("N/A");
         }
       })
       .catch(() => {
-        // Fall back silently to defaults
+        setWindowsVersion("N/A");
+      });
+
+    // Fetch Linux Version
+    fetch(`${backendUrl}/api/v1/app/version/linux`)
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((data) => {
+        if (data?.version) {
+          setLinuxVersion(data.version);
+        } else {
+          setLinuxVersion("N/A");
+        }
+      })
+      .catch(() => {
+        setLinuxVersion("N/A");
+      });
+
+    // Fetch macOS Version
+    fetch(`${backendUrl}/api/v1/app/version/mac`)
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((data) => {
+        if (data?.version) {
+          setMacVersion(data.version);
+        } else {
+          setMacVersion("N/A");
+        }
+      })
+      .catch(() => {
+        setMacVersion("N/A");
       });
   }, []);
 
@@ -372,7 +404,7 @@ export function DownloadCenter() {
           <motion.img animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} src={windowsIcon} className="w-12 h-12 object-contain drop-shadow-xl" alt="Windows" />
         </div>
       ),
-      v: versions.Windows, details: "Windows 10+ · 64-bit", primary: true, buttons: [{ l: "Download .exe", k: "exe", url: `${backendUrl}/api/v1/app/download/windows` }], req: ["Windows 10+", "4 GB RAM", "200 MB Storage", "Internet Connection"]
+      v: windowsVersion, details: "Windows 10+ · 64-bit", primary: true, buttons: [{ l: "Download .exe", k: "exe", url: `${backendUrl}/api/v1/app/download/windows` }], req: ["Windows 10+", "4 GB RAM", "200 MB Storage", "Internet Connection"]
     },
     {
       os: "Linux",
@@ -381,7 +413,7 @@ export function DownloadCenter() {
           <motion.img animate={{ y: [0, -6, 0] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }} src={linuxIcon} className="w-16 h-16 object-contain drop-shadow-xl" alt="Linux" />
         </div>
       ),
-      v: versions.Linux, details: "Ubuntu · Debian · Fedora · Arch", buttons: [{ l: "Download .deb", k: "deb", url: `${backendUrl}/api/v1/app/download/linux/deb` }, { l: "Download .AppImage", k: "appimage", url: `${backendUrl}/api/v1/app/download/linux` }], req: ["Ubuntu 20.04+", "Debian 11+", "Fedora 37+", "4 GB RAM"]
+      v: linuxVersion, details: "Ubuntu · Debian · Fedora · Arch", buttons: [{ l: "Download .deb", k: "deb", url: `${backendUrl}/api/v1/app/download/linux/deb` }, { l: "Download .AppImage", k: "appimage", url: `${backendUrl}/api/v1/app/download/linux` }], req: ["Ubuntu 20.04+", "Debian 11+", "Fedora 37+", "4 GB RAM"]
     },
     {
       os: "macOS",
@@ -390,7 +422,7 @@ export function DownloadCenter() {
           <motion.img animate={{ y: [0, -6, 0] }} transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.4 }} src={macIcon} className="w-20 h-20 object-contain drop-shadow-xl" alt="macOS" />
         </div>
       ),
-      v: versions.macOS, details: "Apple Silicon · Intel", buttons: [{ l: "Download .dmg (Apple Silicon)", k: "dmg-arm", url: `${backendUrl}/api/v1/app/download/mac` }, { l: "Download .dmg (Intel)", k: "dmg-intel", url: `${backendUrl}/api/v1/app/download/mac?arch=x64` }], req: ["macOS 13+", "Apple Silicon", "Intel Supported"]
+      v: macVersion, details: "Apple Silicon · Intel", buttons: [{ l: "Download .dmg (Apple Silicon)", k: "dmg-arm", url: `${backendUrl}/api/v1/app/download/mac` }, { l: "Download .dmg (Intel)", k: "dmg-intel", url: `${backendUrl}/api/v1/app/download/mac?arch=x64` }], req: ["macOS 13+", "Apple Silicon", "Intel Supported"]
     },
   ];
   return (
@@ -463,7 +495,7 @@ export function DownloadCenter() {
           { v: 4280, l: "Windows" },
           { v: 1947, l: "Linux" },
           { v: 3120, l: "macOS" },
-          { v: `v${versions.Windows}`, l: "Current" },
+          { v: `v${windowsVersion}`, l: "Current" },
           { v: "Today", l: "Last Update" },
         ].map((s, i) => (
           <Reveal key={i} delay={i * 0.05}>
