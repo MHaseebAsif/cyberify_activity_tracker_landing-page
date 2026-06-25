@@ -335,6 +335,35 @@ export function DesktopShowcase() {
 
 /* ============== DOWNLOAD CENTER ============== */
 export function DownloadCenter() {
+  const [versions, setVersions] = useState<{ [key: string]: string }>({
+    Windows: "1.0.0",
+    Linux: "1.0.0",
+    macOS: "1.0.0",
+  });
+
+  useEffect(() => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://cyberifytracker.run.place";
+    fetch(`${backendUrl}/api/v1/app/latest-download`)
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((data) => {
+        if (data) {
+          setVersions({
+            Windows: data.windows || "1.0.0",
+            Linux: data.linux || "1.0.0",
+            macOS: data.mac || "1.0.0",
+          });
+        }
+      })
+      .catch(() => {
+        // Fall back silently to defaults
+      });
+  }, []);
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://cyberifytracker.run.place";
+
   const platforms = [
     {
       os: "Windows",
@@ -343,7 +372,7 @@ export function DownloadCenter() {
           <motion.img animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} src={windowsIcon} className="w-12 h-12 object-contain drop-shadow-xl" alt="Windows" />
         </div>
       ),
-      v: "1.0.0", details: "Windows 10+ · 64-bit", primary: true, buttons: [{ l: "Download .exe", k: "exe" }], req: ["Windows 10+", "4 GB RAM", "200 MB Storage", "Internet Connection"]
+      v: versions.Windows, details: "Windows 10+ · 64-bit", primary: true, buttons: [{ l: "Download .exe", k: "exe", url: `${backendUrl}/api/v1/app/download/windows` }], req: ["Windows 10+", "4 GB RAM", "200 MB Storage", "Internet Connection"]
     },
     {
       os: "Linux",
@@ -352,7 +381,7 @@ export function DownloadCenter() {
           <motion.img animate={{ y: [0, -6, 0] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }} src={linuxIcon} className="w-16 h-16 object-contain drop-shadow-xl" alt="Linux" />
         </div>
       ),
-      v: "1.0.0", details: "Ubuntu · Debian · Fedora · Arch", buttons: [{ l: "Download .deb", k: "deb" }, { l: "Download .AppImage", k: "appimage" }], req: ["Ubuntu 20.04+", "Debian 11+", "Fedora 37+", "4 GB RAM"]
+      v: versions.Linux, details: "Ubuntu · Debian · Fedora · Arch", buttons: [{ l: "Download .deb", k: "deb", url: `${backendUrl}/api/v1/app/download/linux/deb` }, { l: "Download .AppImage", k: "appimage", url: `${backendUrl}/api/v1/app/download/linux` }], req: ["Ubuntu 20.04+", "Debian 11+", "Fedora 37+", "4 GB RAM"]
     },
     {
       os: "macOS",
@@ -361,7 +390,7 @@ export function DownloadCenter() {
           <motion.img animate={{ y: [0, -6, 0] }} transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.4 }} src={macIcon} className="w-20 h-20 object-contain drop-shadow-xl" alt="macOS" />
         </div>
       ),
-      v: "1.0.0", details: "Apple Silicon · Intel", buttons: [{ l: "Download .dmg", k: "dmg" }], req: ["macOS 13+", "Apple Silicon", "Intel Supported"]
+      v: versions.macOS, details: "Apple Silicon · Intel", buttons: [{ l: "Download .dmg (Apple Silicon)", k: "dmg-arm", url: `${backendUrl}/api/v1/app/download/mac` }, { l: "Download .dmg (Intel)", k: "dmg-intel", url: `${backendUrl}/api/v1/app/download/mac?arch=x64` }], req: ["macOS 13+", "Apple Silicon", "Intel Supported"]
     },
   ];
   return (
@@ -434,7 +463,7 @@ export function DownloadCenter() {
           { v: 4280, l: "Windows" },
           { v: 1947, l: "Linux" },
           { v: 3120, l: "macOS" },
-          { v: "v1.0.0", l: "Current" },
+          { v: `v${versions.Windows}`, l: "Current" },
           { v: "Today", l: "Last Update" },
         ].map((s, i) => (
           <Reveal key={i} delay={i * 0.05}>
@@ -451,12 +480,23 @@ export function DownloadCenter() {
   );
 }
 
-function PlatformCard({ os, icon, v, details, buttons, primary }: { os: string; icon: React.ReactNode; v: string; details: string; buttons: { l: string; k: string }[]; primary?: boolean }) {
+function PlatformCard({ os, icon, v, details, buttons, primary }: { os: string; icon: React.ReactNode; v: string; details: string; buttons: { l: string; k: string; url: string }[]; primary?: boolean }) {
+  const [clickedKey, setClickedKey] = useState<string | null>(null);
   const [state, setState] = useState<"idle" | "loading" | "verified">("idle");
-  const handle = () => {
+  const handle = (key: string, url: string) => {
+    if (state !== "idle") return;
+    setClickedKey(key);
     setState("loading");
-    setTimeout(() => setState("verified"), 1800);
-    setTimeout(() => setState("idle"), 3800);
+    setTimeout(() => {
+      setState("verified");
+      if (url && url !== "#") {
+        window.location.href = url;
+      }
+    }, 1800);
+    setTimeout(() => {
+      setState("idle");
+      setClickedKey(null);
+    }, 3800);
   };
   return (
     <div className={`relative glass rounded-2xl p-7 h-full group hover:border-ember/40 transition ${primary ? "border-ember/30" : ""}`}>
@@ -470,21 +510,25 @@ function PlatformCard({ os, icon, v, details, buttons, primary }: { os: string; 
       <p className="text-sm text-muted-foreground mt-2">{details}</p>
 
       <div className="mt-6 space-y-2">
-        {buttons.map((b) => (
-          <button
-            key={b.k}
-            onClick={handle}
-            disabled={state !== "idle"}
-            className="w-full bg-ember text-primary-foreground font-semibold px-4 py-3 rounded-lg hover:scale-[1.02] transition disabled:opacity-70 flex items-center justify-center gap-2"
-          >
-            {state === "idle" && <>↓ {b.l}</>}
-            {state === "loading" && <>
-              <motion.span className="inline-block w-3 h-3 rounded-full border-2 border-current border-t-transparent" animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} />
-              Initializing Secure Download...
-            </>}
-            {state === "verified" && <>✓ Authenticity Verified</>}
-          </button>
-        ))}
+        {buttons.map((b) => {
+          const isCurrent = clickedKey === b.k;
+          const buttonState = isCurrent ? state : "idle";
+          return (
+            <button
+              key={b.k}
+              onClick={() => handle(b.k, b.url)}
+              disabled={state !== "idle"}
+              className="w-full bg-ember text-primary-foreground font-semibold px-4 py-3 rounded-lg hover:scale-[1.02] transition disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {buttonState === "idle" && <>↓ {b.l}</>}
+              {buttonState === "loading" && <>
+                <motion.span className="inline-block w-3 h-3 rounded-full border-2 border-current border-t-transparent" animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} />
+                Initializing Secure Download...
+              </>}
+              {buttonState === "verified" && <>✓ Authenticity Verified</>}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
