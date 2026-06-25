@@ -10,24 +10,40 @@ export function ParticleField({ density = 80, color = "#ff7a18", className = "" 
     let raf = 0;
     let w = 0, h = 0;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    type P = { x: number; y: number; vx: number; vy: number; r: number; a: number };
+    let particles: P[] = [];
+
+    const spawnParticles = () => {
+      particles = Array.from({ length: density }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 1.6 + 0.4,
+        a: Math.random() * 0.6 + 0.2,
+      }));
+    };
+
     const resize = () => {
       const r = canvas.getBoundingClientRect();
-      w = r.width; h = r.height;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      ctx.scale(dpr, dpr);
+      w = r.width;
+      h = r.height;
+      if (w <= 0 || h <= 0) return;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (particles.length === 0) spawnParticles();
     };
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
-    const particles = Array.from({ length: density }, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      r: Math.random() * 1.6 + 0.4,
-      a: Math.random() * 0.6 + 0.2,
-    }));
+
     const tick = () => {
+      if (particles.length === 0) {
+        resize();
+        raf = requestAnimationFrame(tick);
+        return;
+      }
       ctx.clearRect(0, 0, w, h);
       for (const p of particles) {
         p.x += p.vx; p.y += p.vy;
@@ -45,7 +61,7 @@ export function ParticleField({ density = 80, color = "#ff7a18", className = "" 
     tick();
     return () => { cancelAnimationFrame(raf); ro.disconnect(); };
   }, [density, color]);
-  return <canvas ref={ref} className={"absolute inset-0 w-full h-full " + className} />;
+  return <canvas ref={ref} className={"absolute inset-0 h-full w-full " + className} />;
 }
 
 /* ============== CLOCK SVG (shared) ============== */
@@ -103,9 +119,20 @@ export function ClockSvg({ phase, spinFace = true, spinHands = false }: { phase:
 }
 
 /* ============== SECTION WRAPPER ============== */
-export function Section({ children, className = "", id }: { children: React.ReactNode; className?: string; id?: string }) {
+export function Section({
+  children,
+  className = "",
+  id,
+  background,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  id?: string;
+  background?: React.ReactNode;
+}) {
   return (
     <section id={id} className={"relative py-28 sm:py-36 px-6 " + className}>
+      {background}
       <div className="max-w-7xl mx-auto relative z-10">{children}</div>
     </section>
   );

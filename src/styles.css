@@ -30,6 +30,11 @@
   --color-ring: var(--ring);
   --color-ember: var(--ember);
   --color-chrome: var(--chrome);
+  --color-status-active: var(--status-active);
+  --color-status-focus: var(--status-focus);
+  --color-status-idle: var(--status-idle);
+  --color-status-meeting: var(--status-meeting);
+  --color-status-coding: var(--status-coding);
   --font-display: "Space Grotesk", "Inter", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
@@ -91,6 +96,11 @@
   --border: oklch(0.28 0.02 250 / 60%);
   --input: oklch(0.25 0.02 250);
   --ring: oklch(0.74 0.18 50);
+  --status-active: oklch(0.78 0.22 145);
+  --status-focus: oklch(0.72 0.19 50);
+  --status-idle: oklch(0.65 0.24 25);
+  --status-meeting: oklch(0.7 0.18 230);
+  --status-coding: oklch(0.65 0.22 305);
 }
 
 .dark { color-scheme: dark; }
@@ -162,5 +172,11 @@
 
   .ember-ring {
     background: conic-gradient(from 0deg, transparent, var(--ember), transparent 30%);
+  }
+  .holo-grid {
+    background-image:
+      linear-gradient(color-mix(in oklab, var(--primary) 8%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--primary) 8%, transparent) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
 }

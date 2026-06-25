@@ -1,19 +1,16 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { Reveal, Section, ParticleField } from "./Core";
+import { Reveal, Section } from "./Core";
 import { HangingRubberClock } from "./HangingClock";
+import { EmbeddedInvestigationCards } from "./EmbeddedInvestigationCards";
+import { DeepSpaceBackground } from "./DeepSpaceBackground";
+import { ParticlesJsBackground } from "./ParticlesJsBackground";
+import { EmbeddedCyberifyCore } from "./EmbeddedCyberifyCore";
+import { EmbeddedLiveActivitySection } from "./EmbeddedLiveActivitySection";
 import { FileSpreadsheet, ClipboardList, MessageSquare, FileText, Globe, LineChart, Phone, StickyNote } from "lucide-react";
 import saadNaeemImg from "@/assets/Pictures/CEO.png";
 /* ============== PROBLEM ============== */
 export function ProblemSection() {
-  const items = [
-    { t: "No one knows what was actually accomplished" },
-    { t: "Status meetings waste hours" },
-    { t: "Managers guess productivity" },
-    { t: "Reports take forever" },
-    { t: "Focus time disappears unnoticed" },
-  ];
-
   const clutter = [
     { icon: <FileSpreadsheet size={14} />, text: "Excel" },
     { icon: <ClipboardList size={14} />, text: "Timesheets" },
@@ -26,8 +23,14 @@ export function ProblemSection() {
   ];
 
   return (
-    <Section className="bg-[oklch(0.09_0.012_250)] overflow-hidden relative">
-      <ParticleField density={40} color="#6b6e76" />
+    <Section
+      className="overflow-hidden relative bg-[#04050a]"
+      background={
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <DeepSpaceBackground />
+        </div>
+      }
+    >
       <div className="absolute right-[6%] lg:right-[10%] top-[-144px] h-[540px] hidden lg:block z-20">
         <HangingRubberClock />
       </div>
@@ -51,29 +54,24 @@ export function ProblemSection() {
           style={{ boxShadow: "0 0 30px #ff7a18" }}
         />
       </div>
-      <div className="grid md:grid-cols-5 gap-4">
-        {items.map((it, i) => (
-          <Reveal key={i} delay={i * 0.08}>
-            <div className="glass rounded-xl p-5 h-full hover:border-ember/40 transition">
-              <div className="text-ember font-mono text-xs mb-3">#{(i + 1).toString().padStart(2, "0")}</div>
-              <p className="text-sm text-foreground/90 leading-snug">{it.t}</p>
-            </div>
-          </Reveal>
-        ))}
-      </div>
+      <EmbeddedInvestigationCards />
     </Section>
   );
 }
 
 /* ============== INTELLIGENCE ENGINE ============== */
 export function IntelligenceEngine() {
-  const features = ["Live Activity", "AI Analysis", "Reports", "Dashboards", "Approvals", "Security", "Infrastructure", "Focus"];
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const rot = useTransform(scrollYProgress, [0, 1], [0, 360]);
   return (
-    <Section id="intelligence" className="overflow-hidden">
-      <div className="text-center mb-16">
+    <Section
+      id="intelligence"
+      className="overflow-hidden relative bg-[#04050a]"
+      background={
+        <div className="pointer-events-none absolute inset-0 z-0 h-full w-full">
+          <ParticlesJsBackground />
+        </div>
+      }
+    >
+      <div className="text-center mb-4">
         <Reveal><p className="font-mono text-xs tracking-[0.3em] text-ember mb-6">// CYBERIFY INTELLIGENCE ENGINE</p></Reveal>
         <Reveal delay={0.1}>
           <h2 className="text-5xl sm:text-7xl font-bold tracking-tight text-balance">
@@ -82,92 +80,14 @@ export function IntelligenceEngine() {
           </h2>
         </Reveal>
       </div>
-      <div ref={ref} className="relative h-[600px] flex items-center justify-center">
-        <motion.div style={{ rotate: rot }} className="absolute inset-0 flex items-center justify-center">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="absolute border border-ember/20 rounded-full" style={{ width: `${i * 120}px`, height: `${i * 120}px`, transform: `rotateX(${65 + i * 5}deg)` }} />
-          ))}
-        </motion.div>
-        <motion.div style={{ rotate: useTransform(scrollYProgress, [0, 1], [0, -270]) }} className="absolute inset-0 flex items-center justify-center">
-          {features.map((f, i) => {
-            const angle = (i / features.length) * Math.PI * 2;
-            const r = 240;
-            return (
-              <motion.div key={f} className="absolute glass-ember rounded-lg px-4 py-2 font-mono text-xs tracking-wider text-ember whitespace-nowrap" style={{ transform: `translate(${Math.cos(angle) * r}px, ${Math.sin(angle) * r * 0.5}px)` }} animate={{ y: [0, -6, 0] }} transition={{ duration: 3 + i * 0.2, repeat: Infinity }}>
-                {f}
-              </motion.div>
-            );
-          })}
-        </motion.div>
-        <motion.div className="relative w-64 h-64 rounded-full bg-gradient-to-br from-ember/40 to-ember/10 backdrop-blur-xl border border-ember/40 flex items-center justify-center glow-ember" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity }}>
-          <div className="absolute inset-4 rounded-full border border-ember/30" />
-          <div className="absolute inset-8 rounded-full border border-ember/20" />
-          <div className="text-center">
-            <div className="font-mono text-xs text-ember tracking-widest">CORE</div>
-            <div className="text-2xl font-bold text-chrome mt-1">Cyberify</div>
-            <div className="font-mono text-[10px] text-muted-foreground mt-1">v1.0 · ONLINE</div>
-          </div>
-          <motion.div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none" style={{ background: "linear-gradient(180deg, transparent 49%, rgba(255,122,24,0.6) 50%, transparent 51%)" }} animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} />
-        </motion.div>
-      </div>
+      <EmbeddedCyberifyCore />
     </Section>
   );
 }
 
 /* ============== LIVE ACTIVITY ============== */
 export function LiveActivity() {
-  const events = [
-    { name: "Ahmed", action: "Active", color: "#22c55e", time: "now" },
-    { name: "Sara", action: "Focus Mode", color: "#ff7a18", time: "2m" },
-    { name: "Lukas", action: "Returned", color: "#22c55e", time: "5m" },
-    { name: "Yui", action: "Idle", color: "#ef4444", time: "8m" },
-    { name: "Marco", action: "Active", color: "#22c55e", time: "10m" },
-    { name: "Priya", action: "Focus Mode", color: "#ff7a18", time: "12m" },
-  ];
-  return (
-    <Section className="bg-[oklch(0.09_0.012_250)]">
-      <div className="grid lg:grid-cols-2 gap-16 items-center">
-        <div>
-          <Reveal><p className="font-mono text-xs tracking-[0.3em] text-ember mb-6">// LIVE ACTIVITY INTELLIGENCE</p></Reveal>
-          <Reveal delay={0.1}>
-            <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-balance">
-              A real-time <span className="text-chrome">operations center</span> for your workforce.
-            </h2>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <p className="mt-6 text-lg text-muted-foreground">Every developer, every state, every signal — live. See your entire global team breathe in one shared canvas.</p>
-          </Reveal>
-          <div className="mt-10 space-y-2 font-mono text-sm">
-            {events.map((e, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="flex items-center gap-3 glass rounded-lg p-3">
-                <span className="w-2 h-2 rounded-full" style={{ background: e.color, boxShadow: `0 0 10px ${e.color}` }} />
-                <span className="text-foreground">{e.name}</span>
-                <span className="text-muted-foreground flex-1">{e.action}</span>
-                <span className="text-xs text-muted-foreground">{e.time}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-        <div className="relative aspect-square max-w-[500px] mx-auto w-full">
-          <motion.div className="absolute inset-0 rounded-full border border-ember/30 grid-bg" style={{ background: "radial-gradient(circle at 30% 30%, oklch(0.74 0.18 50 / 0.2), transparent 60%), radial-gradient(circle, oklch(0.17 0.018 250), oklch(0.09 0.012 250))" }} animate={{ rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: "linear" }}>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="absolute inset-0 rounded-full border border-ember/10" style={{ transform: `rotateY(${i * 30}deg)` }} />
-            ))}
-          </motion.div>
-          {Array.from({ length: 24 }).map((_, i) => {
-            const a = (i / 24) * Math.PI * 2;
-            const r = 35 + Math.random() * 10;
-            return (
-              <motion.div key={i} className="absolute top-1/2 left-1/2 w-1.5 h-1.5 rounded-full" style={{ background: i % 4 === 0 ? "#ff7a18" : i % 5 === 0 ? "#ef4444" : "#22c55e", boxShadow: `0 0 8px currentColor`, color: i % 4 === 0 ? "#ff7a18" : i % 5 === 0 ? "#ef4444" : "#22c55e", transform: `translate(${Math.cos(a) * r}%, ${Math.sin(a) * r}%)` }} animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2 + (i % 3), repeat: Infinity }} />
-            );
-          })}
-          <div className="absolute inset-1/4 rounded-full border border-ember/40 flex items-center justify-center font-mono text-xs text-ember">
-            <div className="text-center"><div className="text-3xl text-chrome font-bold">142</div><div className="tracking-widest">DEVS ONLINE</div></div>
-          </div>
-        </div>
-      </div>
-    </Section>
-  );
+  return <EmbeddedLiveActivitySection />;
 }
 
 /* ============== AI BRAIN ============== */
